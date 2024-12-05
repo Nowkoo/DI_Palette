@@ -6,6 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,7 +26,6 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -58,7 +62,10 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
-                    NavHost(navController = navController, startDestination = "PantallaInicial") {
+                    NavHost(navController = navController, startDestination = "PantallaInicial",
+                        enterTransition = { EnterTransition.None },
+                        exitTransition = { ExitTransition.None }
+                    ) {
                         composable("PantallaInicial") {
                             PantallaInicial(Modifier.padding(innerPadding), navController)
                             changeStatusBarColor(Color.White)
@@ -68,7 +75,24 @@ class MainActivity : ComponentActivity() {
                             arguments = listOf(
                                 navArgument("place") { type = NavType.StringType },
                                 navArgument("foto") { type = NavType.IntType }
-                            )
+                            ),
+//                            enterTransition = {
+//                                slideInHorizontally(
+//                                    animationSpec = tween(
+//                                        300, easing = LinearEasing
+//                                    ))
+////                                ) + slideIntoContainer(
+////                                    animationSpec = tween(300, easing = EaseIn),
+////                                    towards = AnimatedContentTransitionScope.SlideDirection.Start
+////                                )
+//                            },
+                            exitTransition = {
+                                shrinkHorizontally(
+                                    animationSpec = tween(
+                                        300, easing = LinearEasing
+                                    )
+                                )
+                            }
                         ) { backStackEntry ->
                             PaginaFoto(
                                 backStackEntry.arguments?.getString("place"),
